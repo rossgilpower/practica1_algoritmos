@@ -21,7 +21,7 @@ int main(){
 }
 
 int Bus_Binaria(char arreglo[], int izq, int der,char x){
-    clock_t inicio = clock();
+    clock_t inicio = clock();   //Inicio del tiempo de las busquedas
     double tiempo = 0.0;
     cont ++;
     printf("\n# de busqueda: %d",cont);
@@ -52,7 +52,6 @@ int Bus_Binaria(char arreglo[], int izq, int der,char x){
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
     }
-
     return Bus_Binaria(arreglo,izq,der,x); //se aplica recursion para continuar con la busqueda
 
 }
