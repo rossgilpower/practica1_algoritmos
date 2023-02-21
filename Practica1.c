@@ -16,9 +16,9 @@ int cont_Int = 0;
 int main(){
 
     //Practica 1: Busqueda binaria e interpolada
-    char abc[] = {'a','b','c','d','e','f','g','h','i','j'};
+    char abc[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
     int longitud_abc = sizeof(abc)/sizeof(abc[0]); //se calcula el tamano del arreglo
-    char x = 'e'; //valor a buscar
+    char x = 'z'; //valor a buscar
     printf("\n----BUSQUEDA BINARIA-----");
     int resultado_Bin = Bus_Binaria(abc,0,longitud_abc,x); //asignacion del resultado a una variable para facilidad de impresion
     if(resultado_Bin == -1){
@@ -75,6 +75,8 @@ int Bus_Binaria(char arreglo[], int izq, int der,char x){
 
 }
 
+//--------------------------------------------------------------------------------
+
 int Bus_Interpolada(char arreglo[],int izq, int der, char x){
     //La diferencia entre ambas busquedas es la manera en que se calcula el centro, lo demas queda practicamente igual
     clock_t inicio = clock();   //Inicio del tiempo de las busquedas
@@ -84,7 +86,7 @@ int Bus_Interpolada(char arreglo[],int izq, int der, char x){
     if(izq>der){
         return -1; //No encontro el caracter
     }
-    int g = izq + (((der-izq)*(x-arreglo[izq]))/(arreglo[der]-arreglo[izq])); //Aqui se usa la formula de  la interpolacion para aproximar la posición
+    int g = izq + (((x - arreglo[izq]) * (der - izq))/(arreglo[der] - arreglo[izq])); //Aqui se usa la formula de  la interpolacion para aproximar la posición
     if(x == arreglo[g]){
         printf("\nComparando %c con %c ...",x,arreglo[g]);
         clock_t fin = clock();
@@ -93,12 +95,14 @@ int Bus_Interpolada(char arreglo[],int izq, int der, char x){
         return g; //Se retorna el valor que tiene el indice donde se encontró X <<<<<------- SALIDA
     }
     if(x<arreglo[g]){
+        printf("\nValor de g: %d",g);
         printf("\nComparando %c con %c ...",x,arreglo[g]);
         der = g-1; 
         clock_t fin = clock();
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
     }else{
+        printf("\nValor de g: %d",g);
         printf("\nComparando %c con %c ...",x,arreglo[g]);
         izq = g+1;
         clock_t fin = clock();
