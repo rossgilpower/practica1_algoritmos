@@ -6,22 +6,38 @@
 #include <string.h> //Para la comparacion de las cadenas
 #include <time.h> //Agregue esta libreria para mostrar el tiempo
 
-//Prototipos de las funciones
-int Bus_Binaria(char arreglo[][50], int izq, int der,char x []);
-int Bus_Interpolada(char arreglo[][50], int izq, int der, char x []);
+//Prototipos de las funciones iterativas
+int Bus_Binaria_I(char arreglo[][50],int izq, int der, char x[]);
+int Bus_Interpolada_I(char arreglo [][50], int izq, int der, char x[]);
+
+//Prototipos de las funciones recursivas
+int Bus_Binaria_R(char arreglo[][50], int izq, int der,char x []);
+int Bus_Interpolada_R(char arreglo[][50], int izq, int der, char x []);
 
 //Contador de iteraciones
-int cont_Bin = 0;
-int cont_Int = 0;
+int cont_Bin_I = 0;
+int cont_Int_I = 0;
+int cont_Bin_R = 0;
+int cont_Int_R = 0;
+
 
 int main(){
 
     //Practica 1: Busqueda binaria e interpolada
     char animales[][50] = {"abeja","becerro","caballo","delfin","elefante","foca","gato","hamster","iguana","lobo"};
     int longitud_animales = sizeof(animales)/sizeof(animales[0]); //se calcula el tamano del arreglo
-    char x [] = "lobo"; //valor a buscar
+    char x [] = "abeja"; //valor a buscar
+
+    printf("\n------ BUSQUEDA BINARIA ITERATIVA -------");
+    int resultado_Bin_I = Bus_Binaria_I(animales, 0, longitud_animales-1, x);
+    if(resultado_Bin_I == -1){
+        printf("\nNo se ha encontrado la cadena mediante busqueda binaria iterativa");
+    }else{
+        printf("\nEl indice donde se encontro %s es: %d",x,resultado_Bin_I);
+    }
+    printf("\n");
     printf("\n---- BUSQUEDA BINARIA RECURSIVA -----");
-    int resultado_Bin = Bus_Binaria(animales,0,longitud_animales-1,x); //asignacion del resultado a una variable para facilidad de impresion
+    int resultado_Bin = Bus_Binaria_R(animales,0,longitud_animales-1,x); //asignacion del resultado a una variable para facilidad de impresion
     if(resultado_Bin == -1){
         printf("\nNo se ha encontrado la cadena deseada mediante busqueda binaria recursiva");
     }else{
@@ -29,7 +45,7 @@ int main(){
     }
     printf("\n");
     printf("\n---- BUSQUEDA INTERPOLADA RECURSIVA -----");
-    int resultado_Int = Bus_Interpolada(animales,0,longitud_animales-1,x); //asignacion del resultado a una variable para facilidad de impresion
+    int resultado_Int = Bus_Interpolada_R(animales,0,longitud_animales-1,x); //asignacion del resultado a una variable para facilidad de impresion
     if(resultado_Int == -1){
         printf("\nNo se ha encontrado la cadena deseada mediante busqueda interpolada recursiva");
     }else{
@@ -40,11 +56,48 @@ int main(){
     return 0;
 }
 
-int Bus_Binaria(char arreglo[][50], int izq, int der,char x []){
+// ------------------ ITERATIVAS ------------------------------
+
+int Bus_Binaria_I(char arreglo[][50],int izq, int der, char x[]){
     clock_t inicio = clock();   //Inicio del tiempo de las busquedas
     double tiempo = 0.0;
-    cont_Bin ++;
-    printf("\n# de busqueda: %d",cont_Bin);
+    while(izq<=der){
+        cont_Bin_I ++;
+        printf("\n# de busqueda: %d",cont_Bin_I);
+        int centro = (izq+der)/2;
+        if(strcmp(x,arreglo[centro]) == 0){
+            printf("\nComparando %s con %s ...",x,arreglo[centro]);
+            clock_t fin = clock();
+            tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC;
+            printf("Tiempo: %f",tiempo);
+            return centro; // <---- Aqui termina la busqueda
+        }
+        else if(strcmp(x, arreglo[centro]) == 1){ //El valor buscado está a la derecha, == 1 x > arreglo[centro]
+            printf("\nComparando %s con %s ...",x,arreglo[centro]);
+            izq = centro + 1;
+            clock_t fin = clock();
+            tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC;
+            printf("Tiempo: %f",tiempo);
+        }
+        else{
+            printf("\nComparando %s con %s ... ",x,arreglo[centro]);
+            der = centro - 1;   // El valor buscado está a la izq
+            clock_t fin = clock();
+            tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC;
+            printf("Tiempo: %f",tiempo);
+        }
+    }
+   return -1; //No encontró el valor
+}
+
+
+// ------------------ RECURSIVAS ------------------------------
+
+int Bus_Binaria_R(char arreglo[][50], int izq, int der,char x []){
+    clock_t inicio = clock();   //Inicio del tiempo de las busquedas
+    double tiempo = 0.0;
+    cont_Bin_R ++;
+    printf("\n# de busqueda: %d",cont_Bin_R);
 
     if(izq>der){    //No encontro el valor asi que regresa el valor -1
         return -1;
@@ -71,18 +124,18 @@ int Bus_Binaria(char arreglo[][50], int izq, int der,char x []){
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
     }
-    return Bus_Binaria(arreglo,izq,der,x); //se aplica recursion para continuar con la busqueda
+    return Bus_Binaria_R(arreglo,izq,der,x); //se aplica recursion para continuar con la busqueda
 
 }
 
 //--------------------------------------------------------------------------------
 
-int Bus_Interpolada(char arreglo[][50],int izq, int der, char x []){
+int Bus_Interpolada_R(char arreglo[][50],int izq, int der, char x []){
     //La diferencia entre ambas busquedas es la manera en que se calcula el centro, lo demas queda practicamente igual
     clock_t inicio = clock();   //Inicio del tiempo de las busquedas
     double tiempo = 0.0;
-    cont_Int ++;
-    printf("\n# de busqueda: %d",cont_Int);
+    cont_Int_R ++;
+    printf("\n# de busqueda: %d",cont_Int_R);
     if(izq <= der && x>=arreglo[izq] && x<=arreglo[der]){
         int g = izq + ((x - arreglo[izq]) * (der - izq))/(arreglo[der] - arreglo[izq]); //Aqui se usa la formula de  la interpolacion para aproximar la posición
         if(strcmp(x,arreglo[g])== 0){ // == 0 indica que las cadenas son iguales
@@ -97,14 +150,14 @@ int Bus_Interpolada(char arreglo[][50],int izq, int der, char x []){
         clock_t fin = clock();
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
-        return Bus_Interpolada(arreglo,izq,g-1,x);
+        return Bus_Interpolada_R(arreglo,izq,g-1,x);
 
     }else{
         printf("\nComparando %s con %s ...",x,arreglo[g]);
         clock_t fin = clock();
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
-        return Bus_Interpolada(arreglo,g+1,der,x);
+        return Bus_Interpolada_R(arreglo,g+1,der,x);
         }
     }
     return -1;
