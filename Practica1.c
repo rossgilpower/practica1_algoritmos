@@ -27,7 +27,7 @@ int main(){
     //Practica 1: Busqueda binaria e interpolada
     char animales[][50] = {"abeja","becerro","caballo","delfin","elefante","foca","gato","hamster","iguana","lobo"};
     int longitud_animales = sizeof(animales)/sizeof(animales[0]); //se calcula el tamano del arreglo
-    char x [] = "lobo"; //valor a buscar
+    char x [] = "foca"; //valor a buscar
 
     printf("\n------ BUSQUEDA BINARIA ITERATIVA -------");
     int resultado_Bin_I = Bus_Binaria_I(animales, 0, longitud_animales-1, x);
@@ -192,28 +192,29 @@ int Bus_Interpolada_R(char arreglo[][50],int izq, int der, char x []){
     double tiempo = 0.0;
     cont_Int_R ++;
     printf("\n# de busqueda: %d",cont_Int_R);
-    if(izq <= der && x>=arreglo[izq] && x<=arreglo[der]){
-        int g = izq + ((x - arreglo[izq]) * (der - izq))/(arreglo[der] - arreglo[izq]); //Aqui se usa la formula de  la interpolacion para aproximar la posición
-        if(strcmp(x,arreglo[g])== 0){ // == 0 indica que las cadenas son iguales
-        printf("\nComparando %s con %s ...",x,arreglo[g]);
-        clock_t fin = clock();
-        tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
-        printf("Tiempo: %f",tiempo);
-        return g; //Se retorna el valor que tiene el indice donde se encontró X <<<<<------- SALIDA
+    if(izq <= der && strcmp(x, arreglo[izq]) >= 0 && strcmp(x, arreglo[der]) <= 0){
+        int g = izq + ((der - izq) * (strcmp(x, arreglo[izq])) / (strcmp(arreglo[der], arreglo[izq]))); //Aqui se usa la formula de  la interpolacion para aproximar la posición
+        
+        if(strcmp(arreglo[g],x)== 0){ // == 0 indica que las cadenas son iguales
+            printf("\nComparando %s con %s ...",x,arreglo[g]);
+            clock_t fin = clock();
+            tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
+            printf("Tiempo: %f",tiempo);
+            return g; //Se retorna el valor que tiene el indice donde se encontró X <<<<<------- SALIDA
     }
-    if(strcmp(x,arreglo[g]) == -1){ //Si esta a la izq
+    if(strcmp(arreglo[g],x) < 0){ //Si esta a la izq
         printf("\nComparando %s con %s ...",x,arreglo[g]); 
         clock_t fin = clock();
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
-        return Bus_Interpolada_R(arreglo,izq,g-1,x);
+        return Bus_Interpolada_R(arreglo,g+1,der,x);
 
     }else{
         printf("\nComparando %s con %s ...",x,arreglo[g]);
         clock_t fin = clock();
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
-        return Bus_Interpolada_R(arreglo,g+1,der,x);
+        return Bus_Interpolada_R(arreglo,izq,g-1,x);
         }
     }
     return -1;
