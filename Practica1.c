@@ -3,6 +3,7 @@
    Universidad Autonoma de Baja California*/
 
 #include <stdio.h>
+#include <stdlib.h> //Para el calculo de g
 #include <string.h> //Para la comparacion de las cadenas
 #include <time.h> //Agregue esta libreria para mostrar el tiempo
 
@@ -26,7 +27,7 @@ int main(){
     //Practica 1: Busqueda binaria e interpolada
     char animales[][50] = {"abeja","becerro","caballo","delfin","elefante","foca","gato","hamster","iguana","lobo"};
     int longitud_animales = sizeof(animales)/sizeof(animales[0]); //se calcula el tamano del arreglo
-    char x [] = "abeja"; //valor a buscar
+    char x [] = "lobo"; //valor a buscar
 
     printf("\n------ BUSQUEDA BINARIA ITERATIVA -------");
     int resultado_Bin_I = Bus_Binaria_I(animales, 0, longitud_animales-1, x);
@@ -43,6 +44,15 @@ int main(){
     }else{
         printf("\nEl indice donde se encontro %s es: %d",x,resultado_Bin); //impresion final
     }
+
+    printf("\n");
+    printf("\n---- BUSQUEDA INTERPOLADA ITERATIVA -----");
+    int resultado_Int_I = Bus_Interpolada_I(animales,0,longitud_animales-1,x); //asignacion del resultado a una variable para facilidad de impresion
+    if(resultado_Int_I == -1){
+        printf("\nNo se ha encontrado la cadena deseada mediante busqueda interpolada iterativa");
+    }else{
+       printf("\nEl indice donde se encontro %s es: %d",x,resultado_Int_I); //impresion final
+    }
     printf("\n");
     printf("\n---- BUSQUEDA INTERPOLADA RECURSIVA -----");
     int resultado_Int = Bus_Interpolada_R(animales,0,longitud_animales-1,x); //asignacion del resultado a una variable para facilidad de impresion
@@ -52,6 +62,9 @@ int main(){
        printf("\nEl indice donde se encontro %s es: %d",x,resultado_Int); //impresion final
     }
     printf("\n----------------------------");
+
+
+
 
     return 0;
 }
@@ -88,6 +101,49 @@ int Bus_Binaria_I(char arreglo[][50],int izq, int der, char x[]){
         }
     }
    return -1; //No encontró el valor
+}
+
+int Bus_Interpolada_I(char arreglo[][50],int izq, int der, char x []){
+    int valor = -1; // Por si no lo encuentra
+    int g = 0;
+    clock_t inicio = clock();   //Inicio del tiempo de las busquedas
+    double tiempo = 0.0;
+   
+    while(izq<=der){
+        cont_Int_I++;
+        printf("\n# de busqueda: %d",cont_Int_I);
+         //  g   =   i + (((j-i)*(x-A[i]))/(A[j]-A[i]))
+        g = izq + ((der - izq) * (strcmp(x, arreglo[izq])) / (strcmp(arreglo[der], arreglo[izq])));
+
+        /*printf("\n IZQ: %d",izq);
+        printf("\n DER: %d",der);
+        printf("\nValor de g: %d",g);
+        printf("\nValor que da la comparacion: %d",strcmp(x,arreglo[g])); */
+
+        if(strcmp(arreglo[g],x) == 0){ // Son iguales
+            printf("\nComparando %s con %s ...",x,arreglo[g]);
+            clock_t fin = clock();
+            tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC;
+            printf("Tiempo: %f",tiempo);
+            valor = g;
+            break; //<----- Salida si lo encuentra
+        }else{
+            if(strcmp(arreglo[g],x) < 0){ //El valor que busco es menor
+                printf("\nComparando %s con %s ...",x,arreglo[g]);
+                izq = g + 1;
+                clock_t fin = clock();
+                tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC;
+                printf("Tiempo: %f",tiempo);
+            }else{    //El valor que busco es mayor
+                printf("\nComparando %s con %s ...",x, arreglo[g]);
+                der = g - 1;
+                clock_t fin = clock();
+                tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC;
+                printf("Tiempo: %f",tiempo);
+            }
+        }
+    }
+    return valor; //<---- Salida si no lo encuentra
 }
 
 
