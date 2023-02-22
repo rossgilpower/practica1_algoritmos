@@ -17,11 +17,11 @@ int cont_Int = 0;
 int main(){
 
     //Practica 1: Busqueda binaria e interpolada
-    char animales[][50] = {"perro","gato","ardilla","cebra","leon","conejito","pajaro","caballo","cerdito","oveja"};
+    char animales[][50] = {"abeja","becerro","caballo","delfin","elefante","foca","gato","hamster","iguana","lobo"};
     int longitud_animales = sizeof(animales)/sizeof(animales[0]); //se calcula el tamano del arreglo
-    char x [] = "x"; //valor a buscar
+    char x [] = "lobo"; //valor a buscar
     printf("\n---- BUSQUEDA BINARIA RECURSIVA -----");
-    int resultado_Bin = Bus_Binaria(animales,0,longitud_animales,x); //asignacion del resultado a una variable para facilidad de impresion
+    int resultado_Bin = Bus_Binaria(animales,0,longitud_animales-1,x); //asignacion del resultado a una variable para facilidad de impresion
     if(resultado_Bin == -1){
         printf("\nNo se ha encontrado la cadena deseada mediante busqueda binaria recursiva");
     }else{
@@ -29,11 +29,11 @@ int main(){
     }
     printf("\n");
     printf("\n---- BUSQUEDA INTERPOLADA RECURSIVA -----");
-    int resultado_Int = Bus_Interpolada(animales,0,longitud_animales,x); //asignacion del resultado a una variable para facilidad de impresion
+    int resultado_Int = Bus_Interpolada(animales,0,longitud_animales-1,x); //asignacion del resultado a una variable para facilidad de impresion
     if(resultado_Int == -1){
         printf("\nNo se ha encontrado la cadena deseada mediante busqueda interpolada recursiva");
     }else{
-        printf("\nEl indice donde se encontro %s es: %d",x,resultado_Int); //impresion final
+       printf("\nEl indice donde se encontro %s es: %d",x,resultado_Int); //impresion final
     }
     printf("\n----------------------------");
 
@@ -83,32 +83,29 @@ int Bus_Interpolada(char arreglo[][50],int izq, int der, char x []){
     double tiempo = 0.0;
     cont_Int ++;
     printf("\n# de busqueda: %d",cont_Int);
-    if(izq>der){
-        return -1; //No encontro el caracter
-    }
-    int g = izq + (((x - arreglo[izq]) * (der - izq))/(arreglo[der] - arreglo[izq])); //Aqui se usa la formula de  la interpolacion para aproximar la posición
-    if(strcmp(x,arreglo[g])==0){
+    if(izq <= der && x>=arreglo[izq] && x<=arreglo[der]){
+        int g = izq + ((x - arreglo[izq]) * (der - izq))/(arreglo[der] - arreglo[izq]); //Aqui se usa la formula de  la interpolacion para aproximar la posición
+        if(strcmp(x,arreglo[g])== 0){ // == 0 indica que las cadenas son iguales
         printf("\nComparando %s con %s ...",x,arreglo[g]);
         clock_t fin = clock();
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
         return g; //Se retorna el valor que tiene el indice donde se encontró X <<<<<------- SALIDA
     }
-    if(strcmp(x,arreglo[g]) == -1){
-       // printf("\nValor de g: %d",g);
-        printf("\nComparando %s con %s ...",x,arreglo[g]);
-        der = g-1; 
+    if(strcmp(x,arreglo[g]) == -1){ //Si esta a la izq
+        printf("\nComparando %s con %s ...",x,arreglo[g]); 
         clock_t fin = clock();
         tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
         printf("Tiempo: %f",tiempo);
-    }else{
-       //printf("\nValor de g: %d",g);
-        printf("\nComparando %s con %s ...",x,arreglo[g]);
-        izq = g+1;
-        clock_t fin = clock();
-        tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
-        printf("Tiempo: %f",tiempo);
-    }
-    return Bus_Interpolada(arreglo,izq,der,x); //Se aplica la recursion para continuar con la busqueda
+        return Bus_Interpolada(arreglo,izq,g-1,x);
 
+    }else{
+        printf("\nComparando %s con %s ...",x,arreglo[g]);
+        clock_t fin = clock();
+        tiempo += (double)(fin-inicio)/CLOCKS_PER_SEC; //se calcula el tiempo que tomo esta busqueda
+        printf("Tiempo: %f",tiempo);
+        return Bus_Interpolada(arreglo,g+1,der,x);
+        }
+    }
+    return -1;
 }
