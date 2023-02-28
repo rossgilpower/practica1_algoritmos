@@ -27,7 +27,7 @@ int main(){
     //Practica 1: Busqueda binaria e interpolada
     char animales[][50] = {"abeja","becerro","caballo","delfin","elefante","foca","gato","hamster","iguana","lobo"};
     int longitud_animales = sizeof(animales)/sizeof(animales[0]); //se calcula el tamano del arreglo
-    char x [] = "foca"; //valor a buscar
+    char x [] = "iguana"; //valor a buscar
 
     printf("\n------ BUSQUEDA BINARIA ITERATIVA -------");
     int resultado_Bin_I = Bus_Binaria_I(animales, 0, longitud_animales-1, x);
